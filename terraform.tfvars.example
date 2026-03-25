@@ -1,0 +1,15 @@
+# ============================================================
+# terraform.tfvars.example
+# Copy this to terraform.tfvars and fill in your values
+# ============================================================
+
+aws_region          = "ap-south-1"
+project_name        = "devops-infra"
+environment         = "production"
+vpc_cidr            = "10.0.0.0/16"
+public_subnet_cidr  = "10.0.1.0/24"
+private_subnet_cidr = "10.0.2.0/24"
+ami_id              = "ami-0f5ee92e2d63afc18"   # Ubuntu 22.04 LTS - ap-south-1
+instance_type       = "t2.micro"
+key_pair_name       = "your-key-pair-name"       # Replace with your EC2 key pair
+allowed_ssh_cidr    = "0.0.0.0/0"               # Restrict to your IP for production

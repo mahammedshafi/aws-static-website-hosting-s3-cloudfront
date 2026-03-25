@@ -1,0 +1,127 @@
+---
+# ============================================================
+# playbook.yml — Ansible configuration management for EC2
+# ============================================================
+
+- name: Configure AWS EC2 Server
+  hosts: app_servers
+  become: yes
+  vars:
+    app_user: ubuntu
+    app_dir: /opt/app
+    java_version: "11"
+
+  tasks:
+
+    # ── SYSTEM UPDATE ──────────────────────────────────────
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    # ── INSTALL PACKAGES ───────────────────────────────────
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - unzip
+          - python3
+          - python3-pip
+          - openjdk-11-jdk
+        state: present
+
+    # ── INSTALL DOCKER ─────────────────────────────────────
+    - name: Install Docker dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+          - lsb-release
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+        state: present
+
+    - name: Install Docker CE
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: "{{ app_user }}"
+        groups: docker
+        append: yes
+
+    # ── APP DIRECTORY ──────────────────────────────────────
+    - name: Create app directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: "0755"
+
+    # ── FIREWALL ───────────────────────────────────────────
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        port: "22"
+        proto: tcp
+
+    - name: Allow HTTP
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
+
+    - name: Allow App Port
+      ufw:
+        rule: allow
+        port: "8080"
+        proto: tcp
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: deny
+
+    # ── VERIFY ─────────────────────────────────────────────
+    - name: Check Java version
+      command: java -version
+      register: java_version_output
+      changed_when: false
+
+    - name: Check Docker version
+      command: docker --version
+      register: docker_version_output
+      changed_when: false
+
+    - name: Print versions
+      debug:
+        msg:
+          - "Java: {{ java_version_output.stderr }}"
+          - "Docker: {{ docker_version_output.stdout }}"
