@@ -1,123 +1,112 @@
-# ☁️ AWS Cloud Infrastructure Automation
-
-Full AWS infrastructure provisioning using **Terraform IaC** + **Ansible configuration management** + **AWS CLI scripting**. Improved infrastructure deployment efficiency by **30%**.
+# 🚀 AWS Static Website Hosting using S3 & CloudFront (Production-Style)
 
 ## 📌 Project Overview
 
-Automates provisioning of EC2, S3, VPC, Subnets, Security Groups, and IAM using Terraform. Ansible handles server configuration post-provisioning. AWS CLI scripts automate recurring infrastructure tasks.
+This project demonstrates hosting a static website on AWS using S3 and CloudFront with secure and scalable architecture.
 
-## 🏗️ Architecture
+👉 This simulates a real-world cloud deployment used in production environments.
 
-```
-Terraform → AWS Cloud
-              ├── VPC (10.0.0.0/16)
-              │    ├── Public Subnet  → EC2 Instance
-              │    └── Private Subnet
-              ├── Internet Gateway
-              ├── Security Groups (SSH, HTTP, 8080)
-              ├── IAM (Users, Groups, Roles — Least Privilege)
-              └── S3 Bucket (Static Website Hosting)
-                      ↓
-              Ansible → Configure EC2
-              (Docker, Java, UFW, packages)
-```
+---
 
-## 🛠️ Tools & Technologies
+## 🔄 Architecture Flow
 
-| Tool | Purpose |
-|------|---------|
-| Terraform | Infrastructure as Code |
-| Ansible | Configuration Management |
-| AWS EC2 | Compute |
-| AWS S3 | Static website + artifact storage |
-| AWS VPC | Networking |
-| AWS IAM | Access control (least privilege) |
-| AWS CloudWatch | Monitoring & logging |
-| AWS CLI | Scripted automation |
-| Bash | CLI automation scripts |
+User → CloudFront (CDN) → S3 Bucket → Static Website
+
+---
+
+## 🛠 Tools & Technologies
+
+* AWS S3 (Static Website Hosting)
+* AWS CloudFront (Content Delivery Network)
+* AWS IAM (Access Control & Security)
+* HTML, CSS, JavaScript (Frontend)
+
+---
 
 ## 📁 Project Structure
 
-```
-4-aws-infrastructure/
-├── main.tf                    # Core AWS resources (VPC, EC2, S3)
-├── variables.tf               # Input variables
-├── outputs.tf                 # Output values (IPs, URLs)
-├── iam.tf                     # IAM users, groups, roles, policies
-├── terraform.tfvars.example   # Example variable values
-├── ansible/
-│   ├── playbook.yml           # Server configuration playbook
-│   └── inventory.ini          # Target hosts
-├── scripts/
-│   ├── userdata.sh            # EC2 bootstrap script
-│   └── aws-cli-automation.sh  # AWS CLI infrastructure script
-└── README.md
-```
+index.html → Main webpage
+css/ → Styling files
+img/ → Images
+vendor/ → Libraries
 
-## ⚙️ Setup Instructions
+---
 
-### Prerequisites
-- Terraform >= 1.0 installed
-- Ansible installed
-- AWS CLI configured (`aws configure`)
-- AWS account with appropriate permissions
+## ⚙️ Step-by-Step Implementation
 
-### Step 1 — Configure Variables
-```bash
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your values
-```
+### 🔹 Step 1: Create S3 Bucket
 
-### Step 2 — Terraform Deploy
-```bash
-# Initialize
-terraform init
+* Go to AWS S3
+* Create bucket with unique name
+* Disable "Block all public access"
 
-# Preview changes
-terraform plan
+---
 
-# Apply infrastructure
-terraform apply
+### 🔹 Step 2: Upload Website Files
 
-# View outputs
-terraform output
-```
+* Upload index.html, CSS, JS, images
 
-### Step 3 — Ansible Configuration
-```bash
-# Update inventory with your EC2 IP
-nano ansible/inventory.ini
+---
 
-# Test connectivity
-ansible app_servers -i ansible/inventory.ini -m ping
+### 🔹 Step 3: Enable Static Website Hosting
 
-# Run playbook
-ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
-```
+* Enable “Static Website Hosting”
+* Set index document: index.html
 
-### Step 4 — AWS CLI Alternative
-```bash
-chmod +x scripts/aws-cli-automation.sh
-./scripts/aws-cli-automation.sh
-```
+---
 
-### Step 5 — Destroy (Cleanup)
-```bash
-terraform destroy
-```
+### 🔹 Step 4: Configure Bucket Policy
 
-## 🔐 IAM — Least Privilege Principles
+Allow public access using bucket policy
 
-| Resource | Permissions |
-|----------|------------|
-| EC2 Role | S3 Read + CloudWatch Write only |
-| DevOps User | EC2 Describe/Start/Stop + S3 Full |
-| No root credentials | IAM users for all access |
+---
 
-## 📊 Results
+### 🔹 Step 5: Create CloudFront Distribution
 
-- ✅ 30% faster infrastructure setup via automation
-- ✅ Full IaC — reproducible, version-controlled infrastructure
-- ✅ IAM least-privilege for all resources
-- ✅ S3 static website with versioning enabled
-- ✅ Ansible eliminates manual server configuration
+* Select S3 website endpoint
+* Enable CDN for faster delivery
+
+---
+
+### 🔹 Step 6: Access Website
+
+* Use CloudFront domain URL
+* Open in browser
+
+---
+
+## 📷 Proof of Execution
+
+(Add screenshots here)
+
+* S3 bucket created
+* Files uploaded
+* Static hosting enabled
+* CloudFront distribution
+* Website running in browser
+
+---
+
+## 🎯 Key Features
+
+* Scalable static website hosting using AWS S3
+* Low latency using CloudFront CDN
+* Secure access using IAM policies
+* Highly available architecture
+
+---
+
+## 🚀 Real-World Use Case
+
+This architecture is widely used for:
+
+* Portfolio websites
+* Landing pages
+* Frontend hosting for applications
+
+---
+
+## 📌 Conclusion
+
+This project demonstrates how AWS services can be used to host secure, scalable, and high-performance static websites in a real-world DevOps environment.
+
